@@ -1,0 +1,55 @@
+
+Conditions:
+  # Lambda@Edge functions need to be created in us-east-1; in order for this to be redundant it must be somewhere else
+  WrongRegion: !Equals [!Ref 'AWS::Region', us-east-1]
+
+Resources:
+  # ==============
+  # Region validation
+  # ==============
+  YouAreInTheWrongRegion:
+    Type: "AWS::SSM::Parameter"
+    Condition: WrongRegion
+    Properties:
+      Name: '' # Leave name empty to force a fail
+      Type: String
+      Value: ''
+  # ==============
+  # static frontend S3 / Cloudfront
+  # ==============
+  ReplicaBucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      BucketName: !Sub ${AWS::StackName}-replica-bucket
+      VersioningConfiguration:
+        Status: "Enabled"
+      LifecycleConfiguration:
+        Rules:
+          - Id: MustHaveVersioningButDoNotWantOldVersions
+            NoncurrentVersionExpirationInDays: 1
+            Status: "Enabled"
+      WebsiteConfiguration:
+        IndexDocument: "doesnt-exist.html"
+      AccessControl: PublicRead
+
+  ReplicaBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: PublicReadForGetBucketObjects
+            Effect: Allow
+            Principal: '*'
+            Action:
+              - s3:GetObject
+            Resource: !Sub arn:aws:s3:::${AWS::StackName}-replica-bucket/*
+
+      Bucket: !Ref ReplicaBucket
+
+Outputs:
+  ReplicaBucketName:
+    Value: !Ref ReplicaBucket
+
+  ReplicaBucketWebsiteURL:
+    Value: !GetAtt ReplicaBucket.WebsiteURL

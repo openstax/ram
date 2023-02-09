@@ -1,0 +1,213 @@
+
+Parameters:
+
+  Application:
+    Description: This application's lower-case name, e.g. "project-template"
+    Type: String
+
+  EnvName:
+    Description: Which environment this is, e.g. "dev"
+    Type: String
+
+  ReplicaBucketWebsiteURL:
+    Type: String
+
+Conditions:
+  # Lambda@Edge functions need to be created in us-east-1; there might be a way
+  # to set up other resources in other regions using StackSets, but for now force
+  # the region with this condition, in case one day we add Lambda@Edge
+  WrongRegion: !Not [!Equals [!Ref 'AWS::Region', us-east-1]]
+
+  IsProduction: !Or
+    - !Equals [!Ref EnvName, prod]
+    - !Equals [!Ref EnvName, production]
+
+Resources:
+  # ==============
+  # Region validation
+  # ==============
+  YouAreInTheWrongRegion:
+    Type: "AWS::SSM::Parameter"
+    Condition: WrongRegion
+    Properties:
+      Name: '' # Leave name empty to force a fail
+      Type: String
+      Value: ''
+  # ==============
+  # route53
+  # ==============
+  Dns:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneName: !Sub
+      - ${zoneName}.
+      - zoneName:
+          Fn::ImportValue: !Sub subdomain-${Application}-hosted-zone-name
+      RecordSets:
+        - Name: !Sub
+          - ${subDomain}${baseDomain}
+          - subDomain: !If [IsProduction, '', !Sub '${EnvName}.']
+            baseDomain:
+              Fn::ImportValue: !Sub subdomain-${Application}-hosted-zone-name
+          Type: A
+          AliasTarget:
+            HostedZoneId: Z2FDTNDATAQYW2 # Indicates CloudFront
+            DNSName: !GetAtt Distribution.DomainName
+  # ==============
+  # static frontend S3 / Cloudfront
+  # ==============
+  ReplicationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: ['sts:AssumeRole']
+          Effect: Allow
+          Principal:
+            Service: [s3.amazonaws.com]
+
+  ReplicationPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Action:
+          - s3:Get*
+          - s3:ListBucket
+          Resource:
+          - !Sub arn:aws:s3:::${AWS::StackName}-primary-bucket
+          - !Sub arn:aws:s3:::${AWS::StackName}-primary-bucket/*
+          Effect: 'Allow'
+        - Action:
+          - s3:ReplicateObject
+          - s3:ReplicateDelete
+          - s3:ReplicateTags
+          - s3:GetObjectVersionTagging
+          Effect: 'Allow'
+          Resource: !Sub arn:aws:s3:::${AWS::StackName}-replica-bucket/*
+      PolicyName: ReplicationPolicy
+      Roles: [!Ref 'ReplicationRole']
+
+  Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+    Properties:
+      BucketName: !Sub ${AWS::StackName}-primary-bucket
+      ReplicationConfiguration:
+        Role: !GetAtt [ReplicationRole, Arn]
+        Rules:
+        - Destination:
+            Bucket: !Sub arn:aws:s3:::${AWS::StackName}-replica-bucket
+            StorageClass: STANDARD
+          Id: Backup
+          Prefix: ''
+          Status: Enabled
+      VersioningConfiguration:
+        Status: Enabled
+      LifecycleConfiguration:
+        Rules:
+          - Id: MustHaveVersioningButDoNotWantOldVersions
+            NoncurrentVersionExpirationInDays: 1
+            Status: "Enabled"
+      WebsiteConfiguration:
+        IndexDocument: "doesnt-exist.html"
+      AccessControl: PublicRead
+
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: PublicReadForGetBucketObjects
+            Effect: Allow
+            Principal: '*'
+            Action: 's3:GetObject'
+            Resource: !Sub arn:aws:s3:::${AWS::StackName}-primary-bucket/*
+      Bucket: !Ref Bucket
+
+  Distribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        HttpVersion: 'http2'
+        Enabled: 'true'
+        DefaultRootObject: /build/index.html
+        Aliases:
+          - !Sub
+            - ${subDomain}${baseDomain}
+            - subDomain: !If [IsProduction, '', !Sub '${EnvName}.']
+              baseDomain:
+                Fn::ImportValue: !Sub subdomain-${Application}-hosted-zone-name
+
+        ViewerCertificate:
+          AcmCertificateArn:
+            Fn::ImportValue: !Sub subdomain-${Application}-ssl-cert-arn
+          SslSupportMethod: sni-only
+          MinimumProtocolVersion: TLSv1.2_2019
+
+        # This cache behavior always serves /build/index.html
+        DefaultCacheBehavior:
+          TargetOriginId: StaticOrigin
+          AllowedMethods:
+            - GET
+            - HEAD
+            - OPTIONS
+          CachedMethods:
+            - GET
+            - HEAD
+            - OPTIONS
+          Compress: 'true'
+          DefaultTTL: 31536000
+          MaxTTL: 31536000
+          MinTTL: 31536000
+          ForwardedValues:
+            Cookies:
+              Forward: none
+            QueryString: 'false'
+          ViewerProtocolPolicy: redirect-to-https
+          ResponseHeadersPolicyId: 60669652-455b-4ae9-85a4-c4c02393f86c # SimpleCORS
+
+        Origins:
+
+          - Id: StaticPrimaryOrigin
+            DomainName: !Select [1, !Split ["://", !GetAtt Bucket.WebsiteURL]]
+            CustomOriginConfig:
+              OriginKeepaliveTimeout: 5
+              OriginReadTimeout: 60
+              OriginProtocolPolicy: http-only
+
+          - Id: StaticReplicaOrigin
+            DomainName: !Select [1, !Split ["://", !Ref ReplicaBucketWebsiteURL]]
+            CustomOriginConfig:
+              OriginKeepaliveTimeout: 5
+              OriginReadTimeout: 60
+              OriginProtocolPolicy: http-only
+
+        OriginGroups:
+          Quantity: 1
+          Items:
+            - Id: StaticOrigin
+              FailoverCriteria:
+                StatusCodes:
+                  Items: [ 500, 502, 503, 504, 403, 404 ]
+                  Quantity: 6
+              Members:
+                Items:
+                  - OriginId: StaticPrimaryOrigin
+                  - OriginId: StaticReplicaOrigin
+                Quantity: 2
+
+Outputs:
+  StaticBucketName:
+    Value: !Ref Bucket
+
+  DistributionId:
+    Value: !Ref Distribution
+
+  DistributionDomainName:
+    Value: !Sub
+      - ${subDomain}${baseDomain}
+      - subDomain: !If [IsProduction, '', !Sub '${EnvName}.']
+        baseDomain:
+          Fn::ImportValue: !Sub subdomain-${Application}-hosted-zone-name
