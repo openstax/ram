@@ -17,14 +17,15 @@ HEREDOC
   exit 1
 fi
 
-prefix="$2"
+bucketKey="$2"
+prefix=$(cut -d/ -f2 <<< "$bucketKey")
 stackName="$1-$APPLICATION"
 bucketName=$(get-stack-param "$stackName" StaticBucketName)
 
-projects=("rex" "other")
+projects=("rex" "h5p")
 if [[ ! " ${projects[*]} " == *" ${prefix} "* ]]; then
   echo "$prefix is not a recognized RAM project"
   exit 1;
 fi
 
-aws s3 sync "$3" "s3://${bucketName}${prefix}" --region us-east-1
+aws s3 sync --delete "$3" "s3://${bucketName}${bucketKey}" --region us-east-1
