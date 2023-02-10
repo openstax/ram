@@ -17,10 +17,13 @@ HEREDOC
   exit 1
 fi
 
+PATH="$PATH:$SCRIPT_DIR/bin"
 bucketKey="$2"
-prefix=$(cut -d/ -f2 <<< "$bucketKey")
+prefix=$(cut -d/ -f1 <<< "$bucketKey")
 stackName="$1-$APPLICATION"
 bucketName=$(get-stack-param "$stackName" StaticBucketName)
+
+echo $bucketName
 
 projects=("rex" "h5p")
 if [[ ! " ${projects[*]} " == *" ${prefix} "* ]]; then
@@ -28,4 +31,4 @@ if [[ ! " ${projects[*]} " == *" ${prefix} "* ]]; then
   exit 1;
 fi
 
-aws s3 sync --delete "$3" "s3://${bucketName}${bucketKey}" --region us-east-1
+aws s3 sync --delete "$3" "s3://${bucketName}/${bucketKey}" --region us-east-1
