@@ -109,6 +109,14 @@ Resources:
           - Id: MustHaveVersioningButDoNotWantOldVersions
             NoncurrentVersionExpirationInDays: 1
             Status: "Enabled"
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - GET
+            AllowedOrigins:
+              - '*'
       WebsiteConfiguration:
         IndexDocument: "doesnt-exist.html"
       AccessControl: PublicRead
@@ -157,15 +165,9 @@ Resources:
             - GET
             - HEAD
             - OPTIONS
-          Compress: 'true'
-          DefaultTTL: 31536000
-          MaxTTL: 31536000
-          MinTTL: 31536000
-          ForwardedValues:
-            Cookies:
-              Forward: none
-            QueryString: 'false'
           ViewerProtocolPolicy: redirect-to-https
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # CachingOptimized
+          OriginRequestPolicyId: 59781a5b-3903-41f3-afcb-af62929ccde1 # CORS-CustomOrigin
           ResponseHeadersPolicyId: 60669652-455b-4ae9-85a4-c4c02393f86c # SimpleCORS
 
         Origins:

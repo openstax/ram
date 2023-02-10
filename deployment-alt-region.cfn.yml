@@ -28,6 +28,14 @@ Resources:
           - Id: MustHaveVersioningButDoNotWantOldVersions
             NoncurrentVersionExpirationInDays: 1
             Status: "Enabled"
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - GET
+            AllowedOrigins:
+              - '*'
       WebsiteConfiguration:
         IndexDocument: "doesnt-exist.html"
       AccessControl: PublicRead
