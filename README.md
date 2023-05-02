@@ -18,8 +18,8 @@ removed.
 ../ram/upload prod h5p/libraries ./h5p-stuff/librarires
 ```
 
-the project name must be configured in the ram code and there are (will be)
-policies allowing only certain iam roles to upload to project prefixes.
+the project name must be configured in the ram code (currently only [here](/upload.bash#L28))
+and there are (will be) policies allowing only certain iam roles to upload to project prefixes.
 
 files are then available to be viewed at:
 
