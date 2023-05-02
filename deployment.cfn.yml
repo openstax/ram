@@ -134,6 +134,26 @@ Resources:
             Resource: !Sub arn:aws:s3:::${AWS::StackName}-primary-bucket/*
       Bucket: !Ref Bucket
 
+  CorsCachePolicy:
+    Type: AWS::CloudFront::CachePolicy
+    Properties:
+      CachePolicyConfig:
+        DefaultTTL: 86400
+        MaxTTL: 86400
+        MinTTL: 86400
+        Name: 'CorsCachePolicy'
+        Name: !Sub ${AWS::StackName}-cors-cache-policy
+        ParametersInCacheKeyAndForwardedToOrigin:
+          CookiesConfig:
+            CookieBehavior: none
+          EnableAcceptEncodingGzip: true
+          HeadersConfig:
+            HeaderBehavior: whitelist
+            Headers:
+              - Origin
+          QueryStringsConfig:
+            QueryStringBehavior: none
+
   Distribution:
     Type: AWS::CloudFront::Distribution
     Properties:
@@ -166,7 +186,7 @@ Resources:
             - HEAD
             - OPTIONS
           ViewerProtocolPolicy: redirect-to-https
-          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # CachingOptimized
+          CachePolicyId: !Ref CorsCachePolicy 
           OriginRequestPolicyId: 59781a5b-3903-41f3-afcb-af62929ccde1 # CORS-CustomOrigin
           ResponseHeadersPolicyId: 60669652-455b-4ae9-85a4-c4c02393f86c # SimpleCORS
 
