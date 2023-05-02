@@ -119,7 +119,8 @@ Resources:
               - '*'
       WebsiteConfiguration:
         IndexDocument: "doesnt-exist.html"
-      AccessControl: PublicRead
+      PublicAccessBlockConfiguration:
+        BlockPublicPolicy: false
 
   BucketPolicy:
     Type: AWS::S3::BucketPolicy
