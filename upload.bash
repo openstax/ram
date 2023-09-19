@@ -35,4 +35,4 @@ aws s3 sync --delete "$3" "s3://${bucketName}/${bucketKey}" --region us-east-1
 
 distributionId=$(get-stack-param "$stackName" DistributionId)
 
-aws cloudfront create-invalidation --distribution-id "$distributionId" --paths "/*" --output text --query "Invalidation.Status"
+aws cloudfront create-invalidation --distribution-id "$distributionId" --paths "/${bucketKey}/*" --output text --query "Invalidation.Status"
