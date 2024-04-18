@@ -1,0 +1,9 @@
+/* From https://css-tricks.com/copy-the-browsers-native-focus-styles/ */
+.osano-cm-button:focus {
+  outline: 0.2rem auto Highlight;
+  outline: 0.2rem inset -webkit-focus-ring-color;
+}
+
+.osano-cm-toggle__switch {
+  background-color: #878787;
+}
