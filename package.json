@@ -1,5 +1,10 @@
 {
+  "scripts": {
+    "upload": "bash upload.bash"
+  },
   "devDependencies": {
+    "jq": "^1.7.2",
     "yargs": "^17.6.2"
-  }
+  },
+  "dependencies": {}
 }
