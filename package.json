@@ -3,7 +3,7 @@
     "upload": "bash upload.bash"
   },
   "devDependencies": {
-    "jq": "^1.7.2",
+    "node-jq": "^4.3.1",
     "yargs": "^17.6.2"
   },
   "dependencies": {}
