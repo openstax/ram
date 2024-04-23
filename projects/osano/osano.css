@@ -1,0 +1,36 @@
+/* -- Accessibility modifications -- */
+/* From https://css-tricks.com/copy-the-browsers-native-focus-styles/ */
+.osano-cm-button:focus {
+  outline: 0.2rem auto Highlight;
+  outline: 0.2rem inset -webkit-focus-ring-color;
+}
+
+.osano-cm-toggle__switch {
+  background-color: #878787;
+}
+
+.osano-cm-toggle__input:focus + .osano-cm-toggle__switch,
+.osano-cm-toggle__input:hover + .osano-cm-toggle__switch {
+  background-color: #878787;
+  border-color: Highlight;
+  border-color: -webkit-focus-ring-color;
+}
+/* -- end accessibility modifications -- */
+
+/* Delay showing the widget so the app has the option to hide it */
+.osano-cm-widget {
+  animation: fadeInAnimation 5s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+@keyframes fadeInAnimation {
+  0% {
+    opacity: 0;
+  }
+  90% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
