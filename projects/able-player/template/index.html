@@ -10,11 +10,11 @@
     <style>
       body {
         margin: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         height: 100vh;
-        width: 100vw;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         background: #262626;
       }
       .able-wrapper {
@@ -23,6 +23,10 @@
       }
       .able {
         box-shadow: none;
+      }
+      .able-media-container iframe {
+        /* minus the approximate size of the bottom controls  */
+        max-height: calc(100vh - 100px);
       }
     </style>
   </head>
