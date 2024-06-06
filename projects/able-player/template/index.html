@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Watch Online</title>
+    <script src="https://ram.openstax.org/able-player/vendor/jquery.min.js"></script>
+    <script src="https://ram.openstax.org/able-player/vendor/js.cookie.min.js"></script>
+    <link rel="stylesheet" href="https://ram.openstax.org/able-player/build/ableplayer.min.css" type="text/css"/>
+    <script src="https://ram.openstax.org/able-player/build/ableplayer.dist.js"></script>
+    <style>
+     body {
+       margin: 0;
+       height: 100vh;
+       width: 100%;
+       max-width: 100%;
+       display: flex;
+       justify-content: center;
+       align-items: center;
+       background: #262626;
+     }
+     .able-wrapper {
+       margin: 0;
+       flex-grow: 1;
+     }
+     .able {
+       box-shadow: none;
+     }
+     .able-media-container iframe {
+       /* Avoid vertical overflow in smaller viewports */
+       max-height: calc(100vh - 100px); /* minus the approximate size of the bottom controls */
+     }
+     div.able-skin-2020 div.able-seekbar-wrapper {
+       /* Avoid horizontal overflow in smaller viewports caused by inline-block */
+       display: block;
+       margin-top: 0;
+       margin-right: 0;
+       padding-top: 10px;
+     }
+    </style>
+  </head>
+
+  <body>
+    <video data-able-player data-skin="2020" preload="auto" playsinline data-youtube-nocookie data-allow-fullscreen data-youtube-id="<%= ancillary.youtube_url %>">
+    </video>
+  </body>
+</html>
