@@ -25,7 +25,7 @@ bucketName=$(get-stack-param "$stackName" StaticBucketName)
 
 echo $bucketName
 
-projects=("rex" "h5p" "analytics" "osano" "able-player")
+projects=("rex" "h5p" "analytics" "osano" "able-player" "quasar")
 if [[ ! " ${projects[*]} " == *" ${prefix} "* ]]; then
   echo "$prefix is not a recognized RAM project"
   exit 1;
