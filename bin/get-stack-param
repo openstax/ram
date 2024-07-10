@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-aws cloudformation describe-stacks --stack-name "$1" --output json | node-jq -r --arg key "$2" '.Stacks[0].Outputs[]|select(.OutputKey == $key).OutputValue'
+aws cloudformation describe-stacks --stack-name "$1" --output json | jq -r --arg key "$2" '.Stacks[0].Outputs[]|select(.OutputKey == $key).OutputValue'
