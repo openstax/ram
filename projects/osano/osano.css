@@ -34,3 +34,7 @@
     opacity: 1;
   }
 }
+
+.os-subcontent .osano-cm-window {
+  display: none;
+}
