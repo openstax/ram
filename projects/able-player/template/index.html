@@ -41,6 +41,10 @@
 
   <body>
     <video data-able-player data-skin="2020" preload="auto" playsinline data-youtube-nocookie data-allow-fullscreen data-youtube-id="<%= ancillary.youtube_url %>">
+    <% if (format.vtt_file) { %>
+    <track kind="captions" src="<%= fieldUrl('vtt_file') %>" srclang="en" label="English"/>
+    </track>
+    <% } %>
     </video>
   </body>
 </html>
