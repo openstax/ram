@@ -44,19 +44,15 @@
       data-youtube-id="<%= ancillary.youtube_url %>">
       <% if (format.captions) { %>
         <track kind="captions" src="<%= fieldUrl('captions') %>" label="captions" />
-        </track>
       <% } %>
       <% if (format.metadata) { %>
         <track kind="metadata" src="<%= fieldUrl('metadata') %>" label="metadata" />
-        </track>
       <% } %>
       <% if (format.chapters) { %>
         <track kind="chapters" src="<%= fieldUrl('chapters') %>" label="chapters" />
-        </track>
       <% } %>
       <% if (format.descriptions) { %>
         <track kind="descriptions" src="<%= fieldUrl('descriptions') %>" label="descriptions" />
-        </track>
       <% } %>
     </video>
   </body>
