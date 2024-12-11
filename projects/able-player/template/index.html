@@ -43,23 +43,19 @@
     <video data-able-player data-skin="2020" preload="auto" playsinline data-youtube-nocookie data-allow-fullscreen
       data-youtube-id="<%= ancillary.youtube_url %>">
       <% if (format.captions) { %>
-        <track kind="captions" src="<%= fieldUrl('captions') %>" srclang="en" label="captions" />
+        <track kind="captions" src="<%= fieldUrl('captions') %>" label="captions" />
         </track>
       <% } %>
       <% if (format.metadata) { %>
-        <track kind="metadata" src="<%= fieldUrl('metadata') %>" srclang="en" label="metadata" />
+        <track kind="metadata" src="<%= fieldUrl('metadata') %>" label="metadata" />
         </track>
       <% } %>
       <% if (format.chapters) { %>
-        <track kind="chapters" src="<%= fieldUrl('chapters') %>" srclang="en" label="chapters" />
+        <track kind="chapters" src="<%= fieldUrl('chapters') %>" label="chapters" />
         </track>
       <% } %>
       <% if (format.descriptions) { %>
-        <track kind="descriptions" src="<%= fieldUrl('descriptions') %>" srclang="en" label="descriptions" />
-        </track>
-      <% } %>
-      <% if (format.subtitles) { %>
-        <track kind="subtitles" src="<%= fieldUrl('subtitles') %>" srclang="en" label="subtitles" />
+        <track kind="descriptions" src="<%= fieldUrl('descriptions') %>" label="descriptions" />
         </track>
       <% } %>
     </video>
