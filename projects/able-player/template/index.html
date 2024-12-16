@@ -40,7 +40,20 @@
   </head>
 
   <body>
-    <video data-able-player data-skin="2020" preload="auto" playsinline data-youtube-nocookie data-allow-fullscreen data-youtube-id="<%= ancillary.youtube_url %>">
+    <video data-able-player data-skin="2020" preload="auto" playsinline data-youtube-nocookie data-allow-fullscreen
+      data-youtube-id="<%= ancillary.youtube_url %>">
+      <% if (format.captions) { %>
+        <track kind="captions" src="<%= fieldUrl('captions') %>" label="captions" />
+      <% } %>
+      <% if (format.metadata) { %>
+        <track kind="metadata" src="<%= fieldUrl('metadata') %>" label="metadata" />
+      <% } %>
+      <% if (format.chapters) { %>
+        <track kind="chapters" src="<%= fieldUrl('chapters') %>" label="chapters" />
+      <% } %>
+      <% if (format.descriptions) { %>
+        <track kind="descriptions" src="<%= fieldUrl('descriptions') %>" label="descriptions" />
+      <% } %>
     </video>
   </body>
 </html>
