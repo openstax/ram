@@ -14,6 +14,7 @@
        width: 100%;
        max-width: 100%;
        display: flex;
+       flex-direction: column;
        justify-content: center;
        align-items: center;
        background: #262626;
@@ -21,13 +22,19 @@
      .able-wrapper {
        margin: 0;
        flex-grow: 1;
+       display: flex;
+       width: 100%;
      }
      .able {
        box-shadow: none;
      }
+     .able, .able-vidcap-container, .able-media-container {
+       display: flex;
+       flex-direction: column;
+       flex: 1;
+     }
      .able-media-container iframe {
-       /* Avoid vertical overflow in smaller viewports */
-       max-height: calc(100vh - 100px); /* minus the approximate size of the bottom controls */
+       flex: 1;
      }
      div.able-skin-2020 div.able-seekbar-wrapper {
        /* Avoid horizontal overflow in smaller viewports caused by inline-block */
