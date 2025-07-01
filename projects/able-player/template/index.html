@@ -10,6 +10,7 @@
     <style>
      body {
        margin: 0;
+       padding: 0;
        height: 100vh;
        width: 100%;
        max-width: 100%;
@@ -17,7 +18,7 @@
        flex-direction: column;
        justify-content: center;
        align-items: center;
-       background: #262626;
+       background: #262621;
      }
      .able-wrapper {
        margin: 0;
@@ -33,8 +34,15 @@
        flex-direction: column;
        flex: 1;
      }
+     .able-wrapper, .able-media-container, div.able-modal-dialog {
+       overflow: hidden;
+     }
      .able-media-container iframe {
        flex: 1;
+       width: 100%;
+       height: 100%;
+       border: none;
+       display: block;
      }
      div.able-skin-2020 div.able-seekbar-wrapper {
        /* Avoid horizontal overflow in smaller viewports caused by inline-block */
