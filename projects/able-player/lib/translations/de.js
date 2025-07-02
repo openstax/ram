@@ -74,11 +74,11 @@
 
 "preferences": "Einstellungen",
 
-"enterFullscreen": "Vollbildmodus einschalten",
+"enterFullScreen": "Vollbildmodus einschalten",
 
-"exitFullscreen": "Vollbildmodus verlassen",
+"exitFullScreen": "Vollbildmodus verlassen",
 
-"fullscreen": "Vollbildmodus",
+"fullScreen": "Vollbildmodus",
 
 "speed": "Geschwindigkeit",
 

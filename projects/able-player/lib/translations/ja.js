@@ -74,11 +74,11 @@
 
 "preferences": "設定",
 
-"enterFullscreen": "全画面表示",
+"enterFullScreen": "全画面表示",
 
-"exitFullscreen": "全画面表示の終了",
+"exitFullScreen": "全画面表示の終了",
 
-"fullscreen": "全画面表示",
+"fullScreen": "全画面表示",
 
 "speed": "再生速度",
 
