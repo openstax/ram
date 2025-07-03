@@ -74,11 +74,11 @@
 
 "preferences": "Voorkeuren",
 
-"enterFullscreen": "Ga naar volledig scherm",
+"enterFullScreen": "Ga naar volledig scherm",
 
-"exitFullscreen": "Verlaat volledig scherm",
+"exitFullScreen": "Verlaat volledig scherm",
 
-"fullscreen": "Volledig scherm",
+"fullScreen": "Volledig scherm",
 
 "speed": "Snelheid",
 

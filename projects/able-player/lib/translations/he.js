@@ -74,11 +74,11 @@
 
 "preferences": "העדפות",
 
-"enterFullscreen": "מעבר למסך מלא",
+"enterFullScreen": "מעבר למסך מלא",
 
-"exitFullscreen": "יציאה ממסך מלא",
+"exitFullScreen": "יציאה ממסך מלא",
 
-"fullscreen": "מסך מלא",
+"fullScreen": "מסך מלא",
 
 "speed": "מהירות",
 
